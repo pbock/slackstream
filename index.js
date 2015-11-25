@@ -43,6 +43,11 @@ function MattermostStream(webhookURL, options) {
         payload = merge({}, options.defaults, object);
       }
 
+      if (payload.text === undefined || payload.text === null) {
+        next(new Error('Trying to send a payload without a "text" property'));
+        return;
+      }
+
       var postData = querystring.stringify({
         payload: JSON.stringify(payload),
       });

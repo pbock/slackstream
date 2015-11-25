@@ -69,8 +69,16 @@ describe('stream.write()', function () {
       expect(e.message).to.contain('401');
       done();
     });
-    stream.write();
-  })
+    stream.write('');
+  });
+
+  it('emits an error event when trying to send a payload without a text', function (done) {
+    stream.on('error', function (e) {
+      expect(e.message).to.contain('text');
+      done();
+    });
+    stream.write({});
+  });
 
   describe('when called with a string', function () {
     it('automatically wraps it in an object', function (done) {
