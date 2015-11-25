@@ -1,0 +1,17 @@
+{
+  "name": "mattermost-stream",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha; exit 0"
+  },
+  "author": "Philipp Bock <p@philippbock.de> (http://philippbock.de/)",
+  "license": "MIT",
+  "devDependencies": {
+    "body-parser": "^1.14.1",
+    "chai": "^3.4.1",
+    "express": "^4.13.3",
+    "mocha": "^2.3.4"
+  }
+}
