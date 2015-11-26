@@ -1,7 +1,6 @@
 'use strict';
 
 var URL = require('url');
-var http = require('http');
 var stream = require('stream');
 var querystring = require('querystring');
 
@@ -31,6 +30,8 @@ function MattermostStream(webhookURL, options) {
   if (!webhookURL) throw new Error('webhookURL argument required but not supplied');
   var url = URL.parse(webhookURL);
   options = merge({}, DEFAULT_OPTIONS, options);
+
+  var http = require(url.protocol.toLowerCase().replace(':', ''));
 
   var writeStream = new stream.Writable({
     objectMode: true,
@@ -64,7 +65,7 @@ function MattermostStream(webhookURL, options) {
           next(new Error('Unexpected status code: ' + res.statusCode));
           return;
         }
-        res.on('end', next);
+        next();
       });
       req.on('error', next);
       req.write(postData);

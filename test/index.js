@@ -91,6 +91,20 @@ describe('stream.write()', function () {
     stream.write({});
   });
 
+  it('supports writing multiple times', function (done) {
+    let sum = 0, count = 0;
+    requestCallback = function (payload) {
+      sum += (+payload.text);
+      ++count;
+      if (count === 2) {
+        expect(sum).to.equal(3);
+        done();
+      }
+    }
+    stream.write('1');
+    stream.write('2');
+  })
+
   describe('when called with a string', function () {
     it('automatically wraps it in an object', function (done) {
       let string = '' + Math.random();
