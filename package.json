@@ -1,6 +1,6 @@
 {
   "name": "mattermost-stream",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Turn Mattermost's \"incoming webhooks\" into writable node.js streams",
   "keywords": [
     "mattermost",
