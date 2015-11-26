@@ -2,7 +2,13 @@
   "name": "mattermost-stream",
   "version": "0.1.0",
   "description": "Turn Mattermost's \"incoming webhooks\" into writable node.js streams",
-  "keywords": ["mattermost", "slack", "stream", "webhook", "api"],
+  "keywords": [
+    "mattermost",
+    "slack",
+    "stream",
+    "webhook",
+    "api"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "mocha; exit 0"
@@ -14,6 +20,7 @@
     "body-parser": "^1.14.1",
     "chai": "^3.4.1",
     "express": "^4.13.3",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "randomstring": "^1.1.3"
   }
 }

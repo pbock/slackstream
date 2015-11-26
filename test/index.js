@@ -2,6 +2,7 @@
 
 const express = require('express');
 const expect = require('chai').expect;
+const randomstring = require('randomstring');
 
 // Middleware
 const bodyParser = require('body-parser');
@@ -28,8 +29,9 @@ describe('stream.write()', function () {
     let app = express();
     app.use(bodyParser.urlencoded({ extended: false }));
     app.post('/', function (req, res) {
-      requestCallback(JSON.parse(req.body.payload), req);
+      let payload = JSON.parse(req.body.payload);
       res.sendStatus(200);
+      requestCallback(payload, req);
     });
     app.post('/status/:code', function (req, res) {
       res.sendStatus(+req.params.code);
@@ -103,7 +105,17 @@ describe('stream.write()', function () {
     }
     stream.write('1');
     stream.write('2');
-  })
+  });
+
+  it('supports writing buffers', function (done) {
+    requestCallback = function (payload) {
+      try {
+        expect(payload.text).to.equal('foo');
+        done()
+      } catch (e) { done(e); }
+    }
+    stream.write(Buffer('foo'));
+  });
 
   describe('when called with a string', function () {
     it('automatically wraps it in an object', function (done) {
@@ -147,5 +159,75 @@ describe('stream.write()', function () {
       }
       stream.write({ baz: 'quux', text: 'hello' });
     });
-  })
+  });
+
+  describe('options', function () {
+    describe('wait', function () {
+      it('makes the stream buffer input until no writes have occurred for a while', function (done) {
+        let stream = MattermostStream(localURL, { wait: true });
+        requestCallback = function (payload) {
+          try {
+            expect(payload.text).to.equal('foobar');
+            done();
+          } catch (e) { done(e); }
+        }
+        stream.write('foo');
+        stream.write('bar');
+      });
+
+      it('accepts an integer as the number of milliseconds to wait', function (done) {
+        let waitTime = 142;
+        let stream = MattermostStream(localURL, { wait: waitTime });
+        let begin = Date.now();
+        requestCallback = function (payload) {
+          try {
+            expect(Date.now() - begin).to.be.closeTo(waitTime, 10);
+            expect(payload.text).to.equal('foobar');
+            done();
+          } catch (e) { done(e); }
+        }
+        stream.write('foo');
+        stream.write('bar');
+      });
+
+      it('accepts "true" and will wait 200 milliseconds', function (done) {
+        let stream = MattermostStream(localURL, { wait: true });
+        let begin = Date.now();
+        requestCallback = function (payload) {
+          try {
+            expect(Date.now() - begin).to.be.closeTo(200, 10);
+            expect(payload.text).to.equal('foobar');
+            done();
+          } catch (e) { done(e); }
+        }
+        stream.write('foo');
+        stream.write('bar');
+      });
+
+      it('will send immediately when 4000 bytes have been written', function (done) {
+        let stream = MattermostStream(localURL, { wait: 2500 });
+        let begin = Date.now();
+        let data = randomstring.generate(10000);
+        requestCallback = function (payload) {
+          try {
+            expect(Date.now() - begin).to.be.closeTo(0, 100);
+            expect(payload.text.length).to.equal(4000);
+            expect(payload.text).to.equal(data.substr(0, 4000));
+            done();
+          } catch (e) { done(e); }
+        }
+        stream.write(data.substr(0, 3000));
+        stream.write(data.substr(3000, 3000));
+      });
+
+      it('emits an error when trying to write an object', function (done) {
+        let stream = MattermostStream(localURL, { wait: true });
+        requestCallback = function (payload) {
+          done(new Error('This request should never be made'));
+        }
+        stream.on('error', function (e) { done(); })
+        stream.write({ text: '' });
+      });
+    });
+  });
 });
