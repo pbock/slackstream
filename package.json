@@ -9,6 +9,7 @@
     "webhook",
     "api"
   ],
+  "bin": { "mattermost-stream": "./index.js" },
   "main": "index.js",
   "scripts": {
     "test": "mocha; exit 0"
@@ -22,5 +23,8 @@
     "express": "^4.13.3",
     "mocha": "^2.3.4",
     "randomstring": "^1.1.3"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0"
   }
 }

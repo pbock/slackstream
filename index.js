@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 
 var URL = require('url');
@@ -117,3 +118,12 @@ function MattermostStream(webhookURL, options) {
 }
 
 module.exports = MattermostStream;
+
+if (!module.parent) {
+  var options = require('minimist')(process.argv.slice(2));
+  var webhookURL = options._[0];
+  delete options._;
+
+  var stream = MattermostStream(webhookURL, options);
+  process.stdin.pipe(stream);
+}
