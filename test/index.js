@@ -9,17 +9,17 @@ const bodyParser = require('body-parser');
 
 const PORT = 10119;
 
-const MattermostStream = require('..');
+const slackstream = require('..');
 
-describe('MattermostStream', function () {
+describe('slackstream', function () {
   it('is a function', () =>
-    expect(MattermostStream).to.be.a('function'));
+    expect(slackstream).to.be.a('function'));
   it('requires a URL as its first argument', function () {
-    expect(() => MattermostStream()).to.throw();
-    expect(() => MattermostStream('http://example.com')).to.not.throw();
+    expect(() => slackstream()).to.throw();
+    expect(() => slackstream('http://example.com')).to.not.throw();
   });
   it('returns a writable stream', () =>
-    expect(MattermostStream('http://example.com')).to.be.an.instanceof(require('stream')));
+    expect(slackstream('http://example.com')).to.be.an.instanceof(require('stream')));
 });
 
 describe('stream.write()', function () {
@@ -42,7 +42,7 @@ describe('stream.write()', function () {
 
   beforeEach(function () {
     requestCallback = null;
-    stream = MattermostStream(localURL);
+    stream = slackstream(localURL);
   });
 
   it('POSTs a JSON payload to the specified URL', function (done) {
@@ -68,7 +68,7 @@ describe('stream.write()', function () {
   });
 
   it('emits HTTP request error events', function (done) {
-    let stream = MattermostStream('http://thisurldoesnotexist');
+    let stream = slackstream('http://thisurldoesnotexist');
     stream.on('error', function (e) {
       expect(e.code).to.equal('ENOTFOUND');
       done();
@@ -77,7 +77,7 @@ describe('stream.write()', function () {
   });
 
   it('emits an error event when the response status code is not 200', function (done) {
-    let stream = MattermostStream(localURL + '/status/401');
+    let stream = slackstream(localURL + '/status/401');
     stream.on('error', function (e) {
       expect(e.message).to.contain('401');
       done();
@@ -130,7 +130,7 @@ describe('stream.write()', function () {
 
     it('takes into account the default options specified at creation', function (done) {
       let random = Math.random() * 100 | 0;
-      let stream = MattermostStream(localURL, { defaults: { foo: random } });
+      let stream = slackstream(localURL, { defaults: { foo: random } });
       requestCallback = function (payload) {
         expect(payload).to.contain.keys('foo');
         expect(payload.foo).to.equal(random);
@@ -152,7 +152,7 @@ describe('stream.write()', function () {
     });
 
     it('merges the object onto the defaults supplied at startup', function (done) {
-      let stream = MattermostStream(localURL, { defaults: { foo: 'bar', baz: 'bar' }});
+      let stream = slackstream(localURL, { defaults: { foo: 'bar', baz: 'bar' }});
       requestCallback = function (payload) {
         expect(payload).to.deep.equal({ foo: 'bar', baz: 'quux', text: 'hello' });
         done();
@@ -164,7 +164,7 @@ describe('stream.write()', function () {
   describe('options', function () {
     describe('wait', function () {
       it('makes the stream buffer input until no writes have occurred for a while', function (done) {
-        let stream = MattermostStream(localURL, { wait: true });
+        let stream = slackstream(localURL, { wait: true });
         requestCallback = function (payload) {
           try {
             expect(payload.text).to.equal('foobar');
@@ -177,7 +177,7 @@ describe('stream.write()', function () {
 
       it('accepts an integer as the number of milliseconds to wait', function (done) {
         let waitTime = 142;
-        let stream = MattermostStream(localURL, { wait: waitTime });
+        let stream = slackstream(localURL, { wait: waitTime });
         let begin = Date.now();
         requestCallback = function (payload) {
           try {
@@ -191,7 +191,7 @@ describe('stream.write()', function () {
       });
 
       it('accepts "true" and will wait 200 milliseconds', function (done) {
-        let stream = MattermostStream(localURL, { wait: true });
+        let stream = slackstream(localURL, { wait: true });
         let begin = Date.now();
         requestCallback = function (payload) {
           try {
@@ -205,7 +205,7 @@ describe('stream.write()', function () {
       });
 
       it('will send immediately when 4000 bytes have been written', function (done) {
-        let stream = MattermostStream(localURL, { wait: 2500 });
+        let stream = slackstream(localURL, { wait: 2500 });
         let begin = Date.now();
         let data = randomstring.generate(10000);
         requestCallback = function (payload) {
@@ -221,7 +221,7 @@ describe('stream.write()', function () {
       });
 
       it('emits an error when trying to write an object', function (done) {
-        let stream = MattermostStream(localURL, { wait: true });
+        let stream = slackstream(localURL, { wait: true });
         requestCallback = function (payload) {
           done(new Error('This request should never be made'));
         }

@@ -1,17 +1,18 @@
-# mattermost-stream
+# Slackstream
 
-Turn Mattermost's "incoming webhooks" into writable node.js streams
-or a Unix pipe.
+Pipe things into Slack or Mattermost.
+
+Can be used [as a module](#usage-module) or [on the command line](#usage-cli).
 
 ```js
-const MattermostStream = require('mattermost-stream');
-let stream = MattermostStream('https://mm.example.com/hooks/abcd1234');
-stream.write('This will show up in the Mattermost chat.');
+const slackstream = require('slackstream');
+let stream = slackstream('https://mm.example.com/hooks/abcd1234');
+stream.write('This will show up in Slack or Mattermost.');
 ```
 
 ## Usage (Module)
 
-### `MattermostStream(webhookURL[, options ])`
+### `slackstream(webhookURL[, options ])`
 
 Returns a new writable stream that will make POST requests to the specified
 `webhookURL`. The optional `options` argument accepts the following options:
@@ -44,16 +45,16 @@ created.
 ### Example
 
 ```js
-const MattermostStream = require('mattermost-stream');
+const slackstream = require('slackstream');
 const URL = 'https://mm.example.com/hooks/abcd1234';
 
-let stream = new MattermostStream(URL);
-stream.write('This will show up in the Mattermost chat.');
+let stream = slackstream(URL);
+stream.write('This will show up in Slack or Mattermost.');
 stream.write({
   text: 'This message will appear to come from octocat.',
   username: 'octocat' });
 
-let cookieMonster = new MattermostStream(URL,
+let cookieMonster = slackstream(URL,
   { defaults: { username: 'Cookie Monster' } });
 cookieMonster.write('Me like cookies!');
 cookieMonster.write({ text: 'I don\'t like cookies.',
@@ -64,8 +65,8 @@ cookieMonster.write({ text: 'I don\'t like cookies.',
 ## Usage (CLI)
 
 ```sh
-npm install -g mattermost-stream
-echo "Hello world" | mattermost-stream http://mm.example.com/hooks/abcd1234 \
+npm install -g slackstream
+echo "Hello world" | slackstream http://mm.example.com/hooks/abcd1234 \
   --defaults.username octocat \
   --defaults.channel town-square
 ```

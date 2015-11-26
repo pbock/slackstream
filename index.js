@@ -30,7 +30,7 @@ function clone(object) {
 }
 function noop() {}
 
-function MattermostStream(webhookURL, options) {
+function slackstream(webhookURL, options) {
   if (!webhookURL) throw new Error('webhookURL argument required but not supplied');
   var url = URL.parse(webhookURL);
   options = merge({}, DEFAULT_OPTIONS, options);
@@ -117,13 +117,13 @@ function MattermostStream(webhookURL, options) {
   return writeStream;
 }
 
-module.exports = MattermostStream;
+module.exports = slackstream;
 
 if (!module.parent) {
   var options = require('minimist')(process.argv.slice(2));
   var webhookURL = options._[0];
   delete options._;
 
-  var stream = MattermostStream(webhookURL, options);
+  var stream = slackstream(webhookURL, options);
   process.stdin.pipe(stream);
 }
