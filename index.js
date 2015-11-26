@@ -36,7 +36,7 @@ function MattermostStream(webhookURL, options) {
     objectMode: true,
     write: function (object, encoding, next) {
       var payload;
-      if (typeof object === 'string') {
+      if (typeof object !== 'object') {
         payload = clone(options.defaults);
         payload.text = object;
       } else {
@@ -47,6 +47,7 @@ function MattermostStream(webhookURL, options) {
         next(new Error('Trying to send a payload without a "text" property'));
         return;
       }
+      payload.text = '' + payload.text;
 
       var postData = querystring.stringify({
         payload: JSON.stringify(payload),

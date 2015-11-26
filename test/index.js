@@ -54,6 +54,17 @@ describe('stream.write()', function () {
     stream.write(object);
   });
 
+  it('stringifies the "text" property', function (done) {
+    let object = { text: 0, number: 1 };
+    requestCallback = function (payload) {
+      expect(payload.text).to.equal('0');
+      expect(payload.text).to.be.a('string');
+      expect(payload.number).to.equal(1);
+      done();
+    }
+    stream.write(object);
+  });
+
   it('emits HTTP request error events', function (done) {
     let stream = MattermostStream('http://thisurldoesnotexist');
     stream.on('error', function (e) {
