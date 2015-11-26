@@ -10,7 +10,7 @@ var DEFAULT_OPTIONS = {
 
 function merge() {
   var target, argument;
-  for (var i = 0, argument; argument = arguments[i]; i++) {
+  for (var i = 0; (argument = arguments[i]); i++) {
     if (i === 0) {
       target = argument;
       continue;
@@ -57,7 +57,7 @@ function MattermostStream(webhookURL, options) {
       requestOptions.method = 'POST';
       requestOptions.headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': postData.length
+        'Content-Length': postData.length,
       };
 
       var req = http.request(requestOptions, function (res) {
