@@ -1,7 +1,6 @@
 # mattermost-stream
 
 Turn Mattermost's "incoming webhooks" into writable node.js streams.
-It's tested and has no dependencies.
 
 ```js
 const MattermostStream = require('mattermost-stream');
@@ -13,7 +12,7 @@ stream.write('This will show up in the Mattermost chat.');
 
 ### `MattermostStream(webhookURL[, options ])`
 
-Returns a new writable stream will make POST requests to the specified
+Returns a new writable stream that will make POST requests to the specified
 `webhookURL`. The optional `options` argument accepts the following options:
 
 * `defaults`: A template object that will be used for each request. The defaults
