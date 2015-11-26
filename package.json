@@ -1,12 +1,14 @@
 {
   "name": "mattermost-stream",
   "version": "0.1.0",
-  "description": "",
+  "description": "Turn Mattermost's \"incoming webhooks\" into writable node.js streams",
+  "keywords": ["mattermost", "slack", "stream", "webhook", "api"],
   "main": "index.js",
   "scripts": {
     "test": "mocha; exit 0"
   },
   "author": "Philipp Bock <p@philippbock.de> (http://philippbock.de/)",
+  "repository": "pbock/mattermost-stream",
   "license": "MIT",
   "devDependencies": {
     "body-parser": "^1.14.1",

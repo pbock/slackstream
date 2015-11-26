@@ -1,6 +1,7 @@
 # mattermost-stream
 
-Use a Mattermost webhook as a writable node.js stream
+Turn Mattermost's "incoming webhooks" into writable node.js streams.
+It's tested and has no dependencies.
 
 ```js
 const MattermostStream = require('mattermost-stream');
